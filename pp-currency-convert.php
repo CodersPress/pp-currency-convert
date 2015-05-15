@@ -29,9 +29,9 @@ function cc_plugin_updater() {
 		new WP_CC_UPDATER( $config );
 	}
 }
-add_action('admin_menu', 'currency-convert');
-function currency-convert() {
-	add_menu_page('Distance NOT SET', 'Distance NOT SET', 'administrator', __FILE__, 'distance_setting_page',plugins_url('/images/dollar_sign.png', __FILE__));
+add_action('admin_menu', 'currency_convert');
+function currency_convert() {
+	add_menu_page('Distance NOT SET', 'Distance NOT SET', 'administrator', __FILE__, 'currency_convert_setting_page',plugins_url('/images/dollar_sign.png', __FILE__));
 	add_action( 'admin_init', 'register_currency_convert' );
 }
 function register_currency_convert() {
@@ -95,7 +95,7 @@ echo '<div id="message" class="updated fade"><p><strong>Plugin settings saved.</
 </div>
 <?php
 }
-function currency-convert(){
+function pp_currency_convert(){
 ?>
 <script type="text/javascript">
 jQuery('.modal-footer > form:nth-child(1)').attr("action", "");
@@ -106,5 +106,5 @@ if (latitude  === '') {
 </script>
 <?php
 }
-add_action('wp_footer','currency-convert');
+add_action('wp_footer','pp_currency_convert');
 ?>
