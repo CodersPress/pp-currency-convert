@@ -29,82 +29,110 @@ function cc_plugin_updater() {
 		new WP_CC_UPDATER( $config );
 	}
 }
-add_action('admin_menu', 'currency_convert');
+
 function currency_convert() {
-	add_menu_page('Distance NOT SET', 'Distance NOT SET', 'administrator', __FILE__, 'currency_convert_setting_page',plugins_url('/images/dollar_sign.png', __FILE__));
-	add_action( 'admin_init', 'register_currency_convert' );
+
 }
-function register_currency_convert() {
-   	register_setting("currency-convert-settings-group", "currency_convert_alert_message");
-}
-function currency_convert_defaults()
-{
-    $option = array(
-        "currency_convert_alert_message" => "this is a test",
-    );
-  foreach ( $option as $key => $value )
-    {
-       if (get_option($key) == NULL) {
-        update_option($key, $value);
-       }
-    }
-    return;
-}
+
 register_activation_hook(__FILE__, "currency_convert");
 
-function currency_convert_setting_page() {
-if ($_REQUEST['settings-updated']=='true') {
-echo '<div id="message" class="updated fade"><p><strong>Plugin settings saved.</strong></p></div>';
+function jquery_currency_js()
+{
+    wp_register_script( 'currency-script', plugins_url( '/js/jquery.currency.js', __FILE__ ) );
+    wp_enqueue_script( 'currency-script' );
 }
-?>
-<div class="wrap">
-    <h2>PremiumPress - Currency Converter</h2>
-    <hr />
-<form method="post" action="options.php">
-    <?php settings_fields("currency-convert-settings-group");?>
-    <?php do_settings_sections("currency-convert-settings-group");?>
-    <table class="widefat" style="width:600px;">
+add_action( 'wp_enqueue_scripts', 'jquery_currency_js' );
 
- <thead style="background:#2EA2CC;color:#fff;">
-            <tr>
-                <th style="color:#fff;">Message Settings</th>
-                <th style="color:#fff;"></th>
-                <th style="color:#fff;"></th>
-            </tr>
-        </thead>
-<tr>
-<td>This message appears when a users sets a new currency.</td>
-<td></td>
-<td></td>
- </tr>
-
-<tr>
-<td>Alert Message:</td>
-<td><input type="text" size="40" id="currency_convert_alert_message" name="currency_convert_alert_message" value="<?php echo get_option("currency_convert_alert_message");?>"/><br /></td>
-<td></td>
- </tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
- </tr>
-
-  </table>
-    <?php submit_button(); ?>
-</form>
-</div>
-<?php
+function currency_shortcode() {
+    if (isset($_POST['currency-selected'])) {
+        $_SESSION['currency-selected'] = $_POST['currency-selected'];
+    }
+    $STRING = '<form action="" method="post" id="currency">';
+    $STRING .= '<select id="currency-selected" name="currency-selected">';
+    $STRING .= '<option value="" disabled selected style="display:none;">Currency</option>';
+    $get_currencies = get_option('submissionfields');
+    $curriencies = explode("\n", $get_currencies['99']['values']);
+    foreach($curriencies as $values) {
+		$value = preg_replace("/\s+/", "", $values);
+		if(!$value){continue;}
+        $STRING .= '<option value="'.$value.'" '.(($_SESSION["currency-selected"] == $value) ? 'selected="selected"' : "").'>'.$value.'</option>';
+    }
+    $STRING .= '</select>';
+    $STRING .= '</form>';
+    return $STRING;
 }
-function pp_currency_convert(){
+add_shortcode('CURRENCYSELECT', 'currency_shortcode');
+
+function currency_footer_script(){
 ?>
 <script type="text/javascript">
-jQuery('.modal-footer > form:nth-child(1)').attr("action", "");
-var latitude = "<?=$_SESSION['mylocation']['lat'];?>";
-if (latitude  === '') {
-    jQuery(".wlt_shortcode_distance").replaceWith("<span class='wlt_shortcode_distance'><?php echo get_option("distance_message");?><a data-target='#MyLocationModal' data-toggle='modal' onclick='GMApMyLocation();' href='javascript:void(0);'> <i class='fa fa-refresh'  style='cursor:pointer;color:<?php echo get_option('distance_icon_color');?>;'></i></a></span>");
-}
+    jQuery(document).ready(function() {
+		
+	jQuery("#finalprice1, a.btn-lg").text(function (_, text) {
+		    return text.replace(/\(|\)/g, "");
+		});
+
+					<!-- HOME PAGE & SEARCH LISTINGS -->
+		jQuery(".itemdata").each(function () {
+		    var post_ids = jQuery(this).attr("class").match(/itemid(\d+)/)[1];
+		    var cid = "cid" + post_ids;
+		    jQuery(".itemid" + post_ids).find(".wlt_shortcode_price").attr("id", cid);
+		    jQuery.post('<?php echo plugins_url( "/get_currency.php", __FILE__ );?>', 'val=' + post_ids, function (currency_code) {
+		        selectedCurrency = "<?=$_SESSION['currency-selected'];?>";
+		        if (!selectedCurrency) {
+		            selectedCurrency = currency_code;
+		        }
+
+		        jQuery("#" + cid).currency({
+		            region: selectedCurrency,
+		            convertFrom: currency_code,
+		            convertLocation: "<?php echo plugins_url("/convert.php", __FILE__ );?>"
+		        });
+		    });
+		});
+					<!-- HOME PAGE & SEARCH LISTINGS -->
+
+					<!-- SINGLE LISTINGS -->
+jQuery("#SINGLEIMAGEDISPLAY > img:nth-child(1)").each(function () {
+
+		    var post_id = jQuery(this).attr("alt").match(/no-image-(\d+)/)[1];
+		    var cid = "cid" + post_id;
+		    jQuery("#finalprice1, a.btn-lg").attr("id", cid);
+		    jQuery.post('<?php echo plugins_url( "/get_currency.php", __FILE__ );?>', 'val=' + post_id, function (currency_code) {
+		        selectedCurrency = "<?=$_SESSION['currency-selected'];?>";
+		        if (!selectedCurrency) {
+		            var selectedCurrency = currency_code;
+		        }
+
+				var price_amount = jQuery("#" + cid).text().match(/(\d+)/)[1];
+				jQuery("#" + cid).html(price_amount);
+
+
+		        jQuery("#finalprice1, #" + cid).currency({
+		            region: selectedCurrency,
+		            convertFrom: currency_code,
+		            convertLocation: "<?php echo plugins_url("/convert.php", __FILE__ );?>"
+		        });
+
+			setTimeout(function(){
+				var set_price = jQuery("#" + cid).text().match(/((?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?)/)[1];
+					jQuery("input[name=mc_gross]").val(set_price);
+					jQuery("input[name=amount]").val(set_price);
+					jQuery("input[name=c_currency]").val(selectedCurrency);
+					jQuery("input[name=currency_code]").val(selectedCurrency);
+				}, 2500);
+
+		    });
+
+		});
+					<!-- END SINGLE LISTINGS -->
+
+
+		jQuery("#currency-selected").on("change", function () {
+		    jQuery("#currency").submit();
+		});
+});
 </script>
-<?php
-}
-add_action('wp_footer','pp_currency_convert');
+<?php } 
+add_action('wp_footer','currency_footer_script');
 ?>
