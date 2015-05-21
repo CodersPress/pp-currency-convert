@@ -38,13 +38,14 @@ function currency_menu() {
 function register_currency_settings() {
     register_setting("currency-settings-group", "currency_alert_message");
     register_setting("currency-settings-group", "currency_types");
+    register_setting("currency-settings-group", "currency_loading");
 }
 function currency_defaults()
 {
     $option = array(
-        "currency_alert_message" => "All prices are charged in CURRENCY. Use this converter as a guide ONLY!",
+        "currency_alert_message" => "Use this converter as a guide ONLY!",
 		"currency_types" => "AED\r\nARS\r\nAUD\r\nBRL\r\nGBP\r\nCAD\r\nCLP\r\nCNY\r\nCZK\r\nDKK\r\nDOP\r\nEGP\r\nEUR\r\nHKD\r\nHUF\r\nINR\r\nIDR\r\nILS\r\nJPY\r\nMYR\r\nMXN\r\nNZD\r\nNOK\r\nPKR\r\nPLN\r\nRUB\r\nSGD\r\nZAR\r\nKRW\r\nSEK\r\nCHF\r\nTWD\r\nTHB\r\nTRY\r\nUSD",
- 
+		"currency_loading" => "(Converting...)",
     );
   foreach ( $option as $key => $value )
     {
@@ -70,25 +71,35 @@ echo '<div id="message" class="updated fade"><p><strong>Currency settings Change
         <?php settings_fields( "currency-settings-group");?>
         <?php do_settings_sections( "currency-settings-group");?>
         <table class="widefat" style="width:800px;">
-            <thead style="background:#2EA2CC;color:#fff;">
+			<thead style="background:#2EA2CC;color:#fff;">
                 <tr>
-                    <th style="color:#fff;">Message</th>
-                    <th style="color:#fff;"></th>
+                    <th style="color:#fff;">Loading...</th>
                     <th style="color:#fff;"></th>
                 </tr>
             </thead>
             <tr>
-                <td>Alert Message:</td>
+                <td>Loading message appended to prices while converting:</td>
                 <td>
-                    <input type="text" name="currency_alert_message" value="<?php echo get_option( "currency_alert_message");?>" size="80">
+                    <input type="text" name="currency_loading" value="<?php echo get_option( "currency_loading");?>" size="20">
                 </td>
-                <td></td>
+            </tr>
+			<tr>
+            <thead style="background:#2EA2CC;color:#fff;">
+                <tr>
+                    <th style="color:#fff;">Alert Message...</th>
+                    <th style="color:#fff;"></th>
+                </tr>
+            </thead>
+            <tr>
+                <td>Notice message pops when a user changes currency:</td>
+                <td>
+                    <input type="text" name="currency_alert_message" value="<?php echo get_option( "currency_alert_message");?>" size="60">
+                </td>
             </tr>
 			<tr>
 <thead style="background:#2EA2CC;color:#fff;">
                 <tr>
                     <th style="color:#fff;">Currency Types</th>
-                    <th style="color:#fff;"></th>
                     <th style="color:#fff;"></th>
                 </tr>
             </thead>
@@ -97,7 +108,6 @@ echo '<div id="message" class="updated fade"><p><strong>Currency settings Change
                 <td>
                     <textarea name="currency_types" cols=40 rows=20><?php echo get_option( "currency_types");?></textarea>
                 </td>
-                <td></td>
             </tr>
         </table>
         <?php submit_button(); ?>
@@ -149,11 +159,11 @@ jQuery(document).ready(function () {
 
         <!-- HOME PAGE & SEARCH LISTINGS -->
 
-        jQuery(".wlt_shortcode_price").each(function () {
+        jQuery(".itemdata").each(function () {
             jQuery(".wlt_shortcode_price").currency({
                 region: selectedCurrency,
                 convertFrom: "<?php echo $GLOBALS['CORE_THEME']['currency']['code'];?>",
-                convertLocation: "<?php echo plugins_url("/convert.php", __FILE__ );?>"
+                convertLocation: "<?php echo plugins_url("/convert.php", __FILE__ );?>",convertLoading: "<?php echo get_option( 'currency_loading');?>"
             });
         });
 
@@ -164,7 +174,7 @@ jQuery(document).ready(function () {
         jQuery("#finalprice1").currency({
             region: selectedCurrency,
             convertFrom: "<?php echo $GLOBALS['CORE_THEME']['currency']['code'];?>",
-            convertLocation: "<?php echo plugins_url("/convert.php", __FILE__ );?>"
+            convertLocation: "<?php echo plugins_url("/convert.php", __FILE__ );?>",convertLoading: "<?php echo get_option( 'currency_loading');?>"
         });
 
         <!-- END SINGLE LISTINGS -->
@@ -172,12 +182,10 @@ jQuery(document).ready(function () {
         <!-- PACKAGE PRICING -->
 
         jQuery(".panel-title").each(function () {
-
-
             jQuery(".price").currency({
                 region: selectedCurrency,
                 convertFrom: "<?php echo $GLOBALS['CORE_THEME']['currency']['code'];?>",
-                convertLocation: "<?php echo plugins_url("/convert.php", __FILE__ );?>"
+                convertLocation: "<?php echo plugins_url("/convert.php", __FILE__ );?>",convertLoading: "<?php echo get_option( 'currency_loading');?>"
             });
         });
 
@@ -188,7 +196,7 @@ jQuery(document).ready(function () {
         jQuery(".badge.badge-success").currency({
             region: selectedCurrency,
             convertFrom: "<?php echo $GLOBALS['CORE_THEME']['currency']['code'];?>",
-            convertLocation: "<?php echo plugins_url("/convert.php", __FILE__ );?>"
+            convertLocation: "<?php echo plugins_url("/convert.php", __FILE__ );?>",convertLoading: "<?php echo get_option( 'currency_loading');?>"
         });
 
         <!-- END ADD LISTING -->
