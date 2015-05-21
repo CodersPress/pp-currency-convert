@@ -143,7 +143,7 @@ function currency_shortcode() {
     if (isset($_POST['currency-selected'])) {
         $_SESSION['currency-selected'] = $_POST['currency-selected'];
     }
-    $STRING = '<form action="" method="post" id="currency">';
+    $STRING = '<form style="display:inline;" action="" method="post" id="currency">';
     $STRING .= '<select id="currency-selected" name="currency-selected">';
     $STRING .= '<option value="" disabled selected style="display:none;">' . get_option( "currency_first_option") . '</option>';
     $curriencies = explode("\r\n", get_option( "currency_types"));
