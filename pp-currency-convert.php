@@ -3,8 +3,8 @@
 Plugin Name: Premiumpress - Currency Converter
 Plugin URI: http://coderspress.com/
 Description: This plugin converts the default premiumpress currency to the users choice.
-Version: 2015.0515
-Updated: 15th May 2015
+Version: 2015.0521
+Updated: 21st May 2015
 Author: sMarty 
 Author URI: http://coderspress.com
 WP_Requires: 3.8.1
@@ -39,13 +39,15 @@ function register_currency_settings() {
     register_setting("currency-settings-group", "currency_alert_message");
     register_setting("currency-settings-group", "currency_types");
     register_setting("currency-settings-group", "currency_loading");
+    register_setting("currency-settings-group", "currency_first_option");
 }
 function currency_defaults()
 {
     $option = array(
-        "currency_alert_message" => "Use this converter as a guide ONLY!",
+        "currency_alert_message" => "Use this converter as a guide ONLY! All prices are charged in USD",
 		"currency_types" => "AED\r\nARS\r\nAUD\r\nBRL\r\nGBP\r\nCAD\r\nCLP\r\nCNY\r\nCZK\r\nDKK\r\nDOP\r\nEGP\r\nEUR\r\nHKD\r\nHUF\r\nINR\r\nIDR\r\nILS\r\nJPY\r\nMYR\r\nMXN\r\nNZD\r\nNOK\r\nPKR\r\nPLN\r\nRUB\r\nSGD\r\nZAR\r\nKRW\r\nSEK\r\nCHF\r\nTWD\r\nTHB\r\nTRY\r\nUSD",
 		"currency_loading" => "(Converting...)",
+		"currency_first_option" => "Currency Guide",
     );
   foreach ( $option as $key => $value )
     {
@@ -71,6 +73,19 @@ echo '<div id="message" class="updated fade"><p><strong>Currency settings Change
         <?php settings_fields( "currency-settings-group");?>
         <?php do_settings_sections( "currency-settings-group");?>
         <table class="widefat" style="width:800px;">
+			<thead style="background:#2EA2CC;color:#fff;">
+                <tr>
+                    <th style="color:#fff;">First <b>Select</b> option...</th>
+                    <th style="color:#fff;"></th>
+                </tr>
+            </thead>
+            <tr>
+                <td>Appears first in the drop-down-box options. It has no value:</td>
+                <td>
+                    <input type="text" name="currency_first_option" value="<?php echo get_option( "currency_first_option");?>" size="20">
+                </td>
+            </tr>
+			<tr>
 			<thead style="background:#2EA2CC;color:#fff;">
                 <tr>
                     <th style="color:#fff;">Loading...</th>
@@ -99,12 +114,12 @@ echo '<div id="message" class="updated fade"><p><strong>Currency settings Change
 			<tr>
 <thead style="background:#2EA2CC;color:#fff;">
                 <tr>
-                    <th style="color:#fff;">Currency Types</th>
+                    <th style="color:#fff;">Currency Types...</th>
                     <th style="color:#fff;"></th>
                 </tr>
             </thead>
             <tr>
-                <td>Currencies:</td>
+                <td>3 Letter <a href="http://www.xe.com/iso4217.php" target="_blank">ISO codes</a> you want to allow users to chose from.<br /> <br /><b>Enter one per line...</b></td>
                 <td>
                     <textarea name="currency_types" cols=40 rows=20><?php echo get_option( "currency_types");?></textarea>
                 </td>
@@ -130,8 +145,7 @@ function currency_shortcode() {
     }
     $STRING = '<form action="" method="post" id="currency">';
     $STRING .= '<select id="currency-selected" name="currency-selected">';
-    $STRING .= '<option value="" disabled selected style="display:none;">Currency</option>';
-    //$get_currencies = get_option( "currency_types");
+    $STRING .= '<option value="" disabled selected style="display:none;">' . get_option( "currency_first_option") . '</option>';
     $curriencies = explode("\r\n", get_option( "currency_types"));
     foreach($curriencies as $values) {
 		if(!$values){continue;}
