@@ -42,7 +42,7 @@ function register_currency_settings() {
 function currency_defaults()
 {
     $option = array(
-        "currency_alert_message" => "All prices are charged in DEFAULT. Use this converter as a guide ONLY!",
+        "currency_alert_message" => "All prices are charged in CURRENCY. Use this converter as a guide ONLY!",
 		"currency_types" => "AED\r\nARS\r\nAUD\r\nBRL\r\nGBP\r\nCAD\r\nCLP\r\nCNY\r\nCZK\r\nDKK\r\nDOP\r\nEGP\r\nEUR\r\nHKD\r\nHUF\r\nINR\r\nIDR\r\nILS\r\nJPY\r\nMYR\r\nMXN\r\nNZD\r\nNOK\r\nPKR\r\nPLN\r\nRUB\r\nSGD\r\nZAR\r\nKRW\r\nSEK\r\nCHF\r\nTWD\r\nTHB\r\nTRY\r\nUSD",
  
     );
@@ -78,9 +78,9 @@ echo '<div id="message" class="updated fade"><p><strong>Currency settings Change
                 </tr>
             </thead>
             <tr>
-                <td>Alert Message</td>
+                <td>Alert Message:</td>
                 <td>
-                    <textarea name="currency_alert_message" cols=40 rows=6><?php echo get_option( "currency_alert_message");?></textarea>
+                    <input type="text" name="currency_alert_message" value="<?php echo get_option( "currency_alert_message");?>" size="80">
                 </td>
                 <td></td>
             </tr>
@@ -93,7 +93,7 @@ echo '<div id="message" class="updated fade"><p><strong>Currency settings Change
                 </tr>
             </thead>
             <tr>
-                <td>Currencies</td>
+                <td>Currencies:</td>
                 <td>
                     <textarea name="currency_types" cols=40 rows=20><?php echo get_option( "currency_types");?></textarea>
                 </td>
@@ -131,14 +131,14 @@ function currency_shortcode() {
     $STRING .= '</form>';
     return $STRING;
 }
-add_shortcode('CURRENCYSELECT', 'currency_shortcode');
+add_shortcode('CURRENCYCONVERTER', 'currency_shortcode');
 
 function currency_footer_script(){
 ?>
 <script type="text/javascript">
 jQuery(document).ready(function () {
 
-        jQuery("#finalprice1, a.btn-lg, h4.modal-title, #myPaymentOptions > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > h4:nth-child(2)").text(function (_, text) {
+        jQuery("#finalprice1, a.btn-lg").text(function (_, text) {
             return text.replace(/\(|\)/g, "");
         });
 
@@ -192,7 +192,6 @@ jQuery(document).ready(function () {
         });
 
         <!-- END ADD LISTING -->
-
 
         jQuery("#currency-selected").on("change", function () {
 			alert("<?php echo get_option( "currency_alert_message");?>");
