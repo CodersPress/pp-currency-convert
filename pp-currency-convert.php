@@ -3,8 +3,6 @@
 Plugin Name: Premiumpress - Currency Converter
 Plugin URI: http://coderspress.com/
 Description: This plugin converts the default premiumpress currency to the users choice.
-Version: 2015.0521
-Updated: 21st May 2015
 Author: sMarty 
 Author URI: http://coderspress.com
 WP_Requires: 3.8.1
@@ -162,6 +160,15 @@ function currency_footer_script(){
 <script type="text/javascript">
 jQuery(document).ready(function () {
 
+selectedCurrency = "<?=$_SESSION['currency-selected'];?>";
+
+        jQuery("#currency-selected").on("change", function () {
+			alert("<?php echo get_option( "currency_alert_message");?>");
+            jQuery("#currency").submit();
+        });
+
+		if (selectedCurrency) {
+
         jQuery("#finalprice1, a.btn-lg").text(function (_, text) {
             return text.replace(/\(|\)/g, "");
         });
@@ -170,13 +177,11 @@ jQuery(document).ready(function () {
 			return symbol.replace( /\<?php echo $GLOBALS['CORE_THEME']['currency']['symbol'];?>/ig, '' );
 		});
 
-        selectedCurrency = "<?=$_SESSION['currency-selected'];?>";
-
         <!-- PAYMENT OPTIONS -->
 
-		if (jQuery('h4.modal-title').length && selectedCurrency) {
+		if (jQuery('h4.modal-title').length) {
 		var payment_price = jQuery("h4.modal-title").text().match(/((?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?)/)[1];
-		jQuery( "<span> = <span class='payment_price'>" + payment_price + "</span></span>" ).appendTo( "h4.modal-title" );
+		jQuery( "<span> : <span class='payment_price'>" + payment_price + "</span></span>" ).appendTo( "h4.modal-title" );
 		jQuery(".payment_price").currency({
                 region: selectedCurrency,
                 convertFrom: "<?php echo $GLOBALS['CORE_THEME']['currency']['code'];?>",
@@ -185,11 +190,6 @@ jQuery(document).ready(function () {
 		}
 
         <!-- END PAYMENT OPTIONS -->
-
-
-        if (!selectedCurrency) {
-            selectedCurrency = "<?php echo $GLOBALS['CORE_THEME']['currency']['code'];?>";
-        }
 
         <!-- HOME PAGE & SEARCH LISTINGS -->
 
@@ -234,10 +234,7 @@ jQuery(document).ready(function () {
 
         <!-- END ADD LISTING -->
 
-        jQuery("#currency-selected").on("change", function () {
-			alert("<?php echo get_option( "currency_alert_message");?>");
-            jQuery("#currency").submit();
-        });
+}
     });
 </script>
 <?php } 
