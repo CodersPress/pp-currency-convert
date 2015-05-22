@@ -166,7 +166,7 @@ jQuery(document).ready(function () {
             return text.replace(/\(|\)/g, "");
         });
 
-		jQuery(".wlt_shortcode_price, #finalprice1, a.btn-lg, .badge.badge-success").html(function(i,symbol){
+		jQuery(".wlt_shortcode_price, #finalprice1, a.btn-lg, .badge.badge-success, .panel-title.price").html(function(i,symbol){
 			return symbol.replace( /\<?php echo $GLOBALS['CORE_THEME']['currency']['symbol'];?>/ig, '' );
 		});
 
