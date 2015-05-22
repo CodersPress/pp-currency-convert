@@ -166,6 +166,10 @@ jQuery(document).ready(function () {
             return text.replace(/\(|\)/g, "");
         });
 
+		jQuery(".wlt_shortcode_price, #finalprice1, a.btn-lg, .badge.badge-success").html(function(i,symbol){
+			return symbol.replace( /\<?php echo $GLOBALS['CORE_THEME']['currency']['symbol'];?>/ig, '' );
+		});
+
         selectedCurrency = "<?=$_SESSION['currency-selected'];?>";
         if (!selectedCurrency) {
             selectedCurrency = "<?php echo $GLOBALS['CORE_THEME']['currency']['code'];?>";
@@ -184,7 +188,6 @@ jQuery(document).ready(function () {
         <!-- HOME PAGE & SEARCH LISTINGS -->
 
         <!-- SINGLE LISTINGS -->
-
         jQuery("#finalprice1").currency({
             region: selectedCurrency,
             convertFrom: "<?php echo $GLOBALS['CORE_THEME']['currency']['code'];?>",
@@ -214,6 +217,20 @@ jQuery(document).ready(function () {
         });
 
         <!-- END ADD LISTING -->
+
+        <!-- PAYMENT OPTIONS -->
+
+		if (selectedCurrency) {
+		var payment_price = jQuery("h4.modal-title").text().match(/((?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?)/)[1];
+		jQuery( "<span> = <span class='payment_price'>" + payment_price + "</span></span>" ).appendTo( "h4.modal-title" );
+		jQuery(".payment_price").currency({
+                region: selectedCurrency,
+                convertFrom: "<?php echo $GLOBALS['CORE_THEME']['currency']['code'];?>",
+                convertLocation: "<?php echo plugins_url("/convert.php", __FILE__ );?>",convertLoading: "<?php echo get_option( 'currency_loading');?>"
+            });
+		}
+
+        <!-- END PAYMENT OPTIONS -->
 
         jQuery("#currency-selected").on("change", function () {
 			alert("<?php echo get_option( "currency_alert_message");?>");
