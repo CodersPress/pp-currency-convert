@@ -195,13 +195,11 @@ selectedCurrency = "<?=$_SESSION['currency-selected'];?>";
 
         <!-- HOME PAGE & SEARCH LISTINGS -->
 
-        jQuery(".itemdata").each(function () {
             jQuery(".wlt_shortcode_price").currency({
                 region: selectedCurrency,
                 convertFrom: "<?php echo $GLOBALS['CORE_THEME']['currency']['code'];?>",
                 convertLocation: "<?php echo plugins_url("/convert.php", __FILE__ );?>",convertLoading: "<?php echo get_option( 'currency_loading');?>"
             });
-        });
 
         <!-- HOME PAGE & SEARCH LISTINGS -->
 
@@ -216,13 +214,12 @@ selectedCurrency = "<?=$_SESSION['currency-selected'];?>";
 
         <!-- PACKAGE PRICING -->
 
-        jQuery(".panel-title").each(function () {
-            jQuery(".price").currency({
-                region: selectedCurrency,
-                convertFrom: "<?php echo $GLOBALS['CORE_THEME']['currency']['code'];?>",
-                convertLocation: "<?php echo plugins_url("/convert.php", __FILE__ );?>",convertLoading: "<?php echo get_option( 'currency_loading');?>"
-            });
+        jQuery(".panel-title.price").currency({
+             region: selectedCurrency,
+             convertFrom: "<?php echo $GLOBALS['CORE_THEME']['currency']['code'];?>",
+             convertLocation: "<?php echo plugins_url("/convert.php", __FILE__ );?>",convertLoading: "<?php echo get_option( 'currency_loading');?>"
         });
+
 
         <!-- END PACKAGE PRICING -->
 
