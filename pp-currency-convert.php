@@ -3,6 +3,8 @@
 Plugin Name: Premiumpress - Currency Converter
 Plugin URI: http://coderspress.com/
 Description: This plugin converts the default premiumpress currency to the users choice.
+Version: 2015.0522
+Updated: 22nd May 2015
 Author: sMarty 
 Author URI: http://coderspress.com
 WP_Requires: 3.8.1
