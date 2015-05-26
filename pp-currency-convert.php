@@ -217,7 +217,7 @@ selectedCurrency = "<?=$_SESSION['currency-selected'];?>";
 		jQuery(".panel-title.price").each(function ( i ) {
         jQuery(this).attr('id', 'price'+i);
         jQuery(this).next('.days').attr('id', 'pack'+i);
-		jQuery( "<span class='package_price'>" + jQuery('#price'+i).text().match(/((?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?)/)[1] + "</span><span> : </span>" ).prependTo( "#pack"+i );
+		jQuery( "<b><span class='package_price'>" + jQuery('#price'+i).text().match(/((?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?)/)[1] + "</span><span> : </span></b>" ).prependTo( "#pack"+i );
 
 		});
 
