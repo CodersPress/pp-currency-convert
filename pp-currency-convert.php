@@ -3,8 +3,8 @@
 Plugin Name: Premiumpress - Currency Converter
 Plugin URI: http://coderspress.com/
 Description: This plugin converts the default premiumpress currency to the users choice.
-Version: 2015.0522
-Updated: 22nd May 2015
+Version: 2015.0526
+Updated: 26th May 2015
 Author: sMarty 
 Author URI: http://coderspress.com
 WP_Requires: 3.8.1
@@ -175,7 +175,7 @@ selectedCurrency = "<?=$_SESSION['currency-selected'];?>";
             return text.replace(/\(|\)/g, "");
         });
 
-		jQuery(".wlt_shortcode_price, #finalprice1, a.btn-lg, .badge.badge-success, .panel-title.price").html(function(i,symbol){
+		jQuery(".wlt_shortcode_price, #finalprice1, a.btn-lg, .badge.badge-success").html(function(i,symbol){
 			return symbol.replace( /\<?php echo $GLOBALS['CORE_THEME']['currency']['symbol'];?>/ig, '' );
 		});
 
@@ -214,12 +214,18 @@ selectedCurrency = "<?=$_SESSION['currency-selected'];?>";
 
         <!-- PACKAGE PRICING -->
 
-        jQuery(".panel-title.price").currency({
+		jQuery(".panel-title.price").each(function ( i ) {
+        jQuery(this).attr('id', 'price'+i);
+        jQuery(this).next('.days').attr('id', 'pack'+i);
+		jQuery( "<span class='package_price'>" + jQuery('#price'+i).text().match(/((?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?)/)[1] + "</span><span> : </span>" ).prependTo( "#pack"+i );
+
+		});
+
+        jQuery(".package_price").currency({
              region: selectedCurrency,
              convertFrom: "<?php echo $GLOBALS['CORE_THEME']['currency']['code'];?>",
              convertLocation: "<?php echo plugins_url("/convert.php", __FILE__ );?>",convertLoading: "<?php echo get_option( 'currency_loading');?>"
         });
-
 
         <!-- END PACKAGE PRICING -->
 
