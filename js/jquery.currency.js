@@ -112,6 +112,7 @@
                 if (bc == 'HUF') currency_before = '<span class="currency">Ft<\/span>';
                 if (bc == 'ISK') currency_before = '<span class="currency">kr<\/span>';
                 if (bc == 'IDR') currency_before = '<span class="currency">Rp<\/span>';
+                if (bc == 'IND') currency_before = '<span class="currency">&#8377;<\/span>';
                 if (bc == 'IMP') currency_before = '<span class="currency">&pound;<\/span>';
                 if (bc == 'JMD') currency_before = '<span class="currency">J$<\/span>';
                 if (bc == 'JPY') currency_before = '<span class="currency">&yen;<\/span>';
